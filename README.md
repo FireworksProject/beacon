@@ -1,5 +1,11 @@
-Fireworks Project App Monitor
-=============================
+Beacon
+======
+
+Service: Web application deployment, config management, and health monitor
+
+Beacon is a service (in a service oriented architecture) that is used to
+facilitate remote web application deployment, configuration management, and
+health monitoring. Beacon is built on Node.js.
 
 Copyright and License
 ---------------------
