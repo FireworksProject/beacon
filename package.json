@@ -1,0 +1,8 @@
+{
+"name": "app-monitor",
+"version": "0.1.0",
+"description": "Application Monitor for Platform.X",
+    "dependencies": {
+        "coffee-script": "1.3.3"
+    }
+}
