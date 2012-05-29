@@ -1,0 +1,206 @@
+info it worked if it ends with ok
+verbose cli [ 'node', '/usr/local/bin/npm', 'install' ]
+info using npm@1.1.1
+info using node@v0.6.11
+verbose config file /home/kixx/.npmrc
+verbose config file /usr/local/etc/npmrc
+verbose config file /usr/local/lib/node_modules/npm/npmrc
+verbose caching /home/kixx/Rprojects/fireworksproject/beacon/dist/package.json
+verbose loadDefaults beacon@0.1.0
+verbose where, deps [ '/home/kixx/Rprojects/fireworksproject/beacon/dist',
+verbose where, deps   [ 'bunyan', 'telegram', 'nodemailer', 'q-smsified' ] ]
+verbose from cache /home/kixx/Rprojects/fireworksproject/beacon/dist/package.json
+info preinstall beacon@0.1.0
+verbose from cache /home/kixx/Rprojects/fireworksproject/beacon/dist/package.json
+verbose cache add [ 'bunyan@0.7.0', null ]
+silly cache add: name, spec, args [ undefined, 'bunyan@0.7.0', [ 'bunyan@0.7.0', null ] ]
+verbose parsed url { pathname: 'bunyan@0.7.0',
+verbose parsed url   path: 'bunyan@0.7.0',
+verbose parsed url   href: 'bunyan@0.7.0' }
+silly cache add: name, spec, args [ 'bunyan', '0.7.0', [ 'bunyan', '0.7.0' ] ]
+verbose parsed url { pathname: '0.7.0', path: '0.7.0', href: '0.7.0' }
+verbose addNamed [ 'bunyan', '0.7.0' ]
+verbose addNamed [ '0.7.0', '0.7.0' ]
+verbose cache add [ 'telegram@0.1.1', null ]
+silly cache add: name, spec, args [ undefined, 'telegram@0.1.1', [ 'telegram@0.1.1', null ] ]
+verbose parsed url { pathname: 'telegram@0.1.1',
+verbose parsed url   path: 'telegram@0.1.1',
+verbose parsed url   href: 'telegram@0.1.1' }
+silly cache add: name, spec, args [ 'telegram', '0.1.1', [ 'telegram', '0.1.1' ] ]
+verbose parsed url { pathname: '0.1.1', path: '0.1.1', href: '0.1.1' }
+verbose addNamed [ 'telegram', '0.1.1' ]
+verbose addNamed [ '0.1.1', '0.1.1' ]
+verbose cache add [ 'nodemailer@0.3.20', null ]
+silly cache add: name, spec, args [ undefined, 'nodemailer@0.3.20', [ 'nodemailer@0.3.20', null ] ]
+verbose parsed url { pathname: 'nodemailer@0.3.20',
+verbose parsed url   path: 'nodemailer@0.3.20',
+verbose parsed url   href: 'nodemailer@0.3.20' }
+silly cache add: name, spec, args [ 'nodemailer', '0.3.20', [ 'nodemailer', '0.3.20' ] ]
+verbose parsed url { pathname: '0.3.20', path: '0.3.20', href: '0.3.20' }
+verbose addNamed [ 'nodemailer', '0.3.20' ]
+verbose addNamed [ '0.3.20', '0.3.20' ]
+verbose cache add [ 'q-smsified@https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+verbose cache add   null ]
+silly cache add: name, spec, args [ undefined,
+silly cache add: name, spec, args   'q-smsified@https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+silly cache add: name, spec, args   [ 'q-smsified@https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+silly cache add: name, spec, args     null ] ]
+verbose parsed url { pathname: 'q-smsified@https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+verbose parsed url   path: 'q-smsified@https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+verbose parsed url   href: 'q-smsified@https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz' }
+silly cache add: name, spec, args [ 'q-smsified',
+silly cache add: name, spec, args   'https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+silly cache add: name, spec, args   [ 'q-smsified',
+silly cache add: name, spec, args     'https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz' ] ]
+verbose parsed url { protocol: 'https:',
+verbose parsed url   slashes: true,
+verbose parsed url   host: 'github.com',
+verbose parsed url   hostname: 'github.com',
+verbose parsed url   href: 'https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+verbose parsed url   pathname: '/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+verbose parsed url   path: '/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz' }
+verbose addRemoteTarball [ 'https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz',
+verbose addRemoteTarball   null ]
+verbose raw, before any munging bunyan/0.7.0
+verbose url resolving [ 'https://registry.npmjs.org/', './bunyan/0.7.0' ]
+verbose url resolved https://registry.npmjs.org/bunyan/0.7.0
+verbose etag "1BLGAQBV5ZGOOAE10O4UYSBAG"
+http GET https://registry.npmjs.org/bunyan/0.7.0
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1338250379751'
+verbose raw, before any munging nodemailer/0.3.20
+verbose url resolving [ 'https://registry.npmjs.org/', './nodemailer/0.3.20' ]
+verbose url resolved https://registry.npmjs.org/nodemailer/0.3.20
+verbose etag "4BZ7IRBCM1UBY45SDJW0X1C0V"
+http GET https://registry.npmjs.org/nodemailer/0.3.20
+verbose raw, before any munging telegram/0.1.1
+verbose url resolving [ 'https://registry.npmjs.org/', './telegram/0.1.1' ]
+verbose url resolved https://registry.npmjs.org/telegram/0.1.1
+verbose etag "BDO82A0LDB4KRN42IBSHGRF3I"
+http GET https://registry.npmjs.org/telegram/0.1.1
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1338250379751/1338250379751-0.6990306975785643'
+verbose mkdir done: /tmp/npm-1338250379751/1338250379751-0.6990306975785643 755
+verbose fetch to /tmp/npm-1338250379751/1338250379751-0.6990306975785643/tmp.tgz
+http GET https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz
+http 304 https://registry.npmjs.org/bunyan/0.7.0
+silly get cb [ 304,
+silly get cb   { server: 'CouchDB/1.2.0 (Erlang OTP/R15B)',
+silly get cb     etag: '"1BLGAQBV5ZGOOAE10O4UYSBAG"',
+silly get cb     date: 'Tue, 29 May 2012 00:12:58 GMT',
+silly get cb     'content-length': '0' } ]
+verbose etag bunyan/0.7.0 from cache
+verbose bin dist [ '0.6-ares1.7.5-DEV-evundefined-openssl0.9.8k-v83.6.6.20-linux-x64-2.6.32-41-generic',
+verbose bin dist   { shasum: '921065e70c936fe302a740e2c5605775beea2f42',
+verbose bin dist     tarball: 'http://registry.npmjs.org/bunyan/-/bunyan-0.7.0.tgz' } ]
+verbose caching /home/kixx/.npm/bunyan/0.7.0/package/package.json
+verbose loadDefaults bunyan@0.7.0
+http 304 https://registry.npmjs.org/telegram/0.1.1
+silly get cb [ 304,
+silly get cb   { server: 'CouchDB/1.2.0 (Erlang OTP/R15B)',
+silly get cb     etag: '"BDO82A0LDB4KRN42IBSHGRF3I"',
+silly get cb     date: 'Tue, 29 May 2012 00:13:03 GMT',
+silly get cb     'content-length': '0' } ]
+verbose etag telegram/0.1.1 from cache
+verbose bin dist [ '0.6-ares1.7.5-DEV-evundefined-openssl0.9.8k-v83.6.6.20-linux-x64-2.6.32-41-generic',
+verbose bin dist   { shasum: '31a4b0813860a7a9d06b6de7d38520725c365c3c',
+verbose bin dist     tarball: 'http://registry.npmjs.org/telegram/-/telegram-0.1.1.tgz' } ]
+verbose caching /home/kixx/.npm/telegram/0.1.1/package/package.json
+verbose loadDefaults telegram@0.1.1
+http 200 https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz
+verbose mkdir (expected) error ENOENT, no such file or directory '/tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm'
+verbose mkdir done: /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm 755
+verbose unpack_ uid, gid [ undefined, undefined ]
+verbose unpackTarget /tmp/npm-1338250379751/1338250379751-0.6990306975785643/package
+silly gunzTarPerm modes [ '755', '644' ]
+silly afterUntar undefined
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/index.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/package.json
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/MIT-LICENSE
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/CHANGES.md
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/q.min.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/README.md
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/.npmignore
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/q.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/LICENSE
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/ref_send.md
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/.travis.yml
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/markm-mzero.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/package.json
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/TODO
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/q5.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/q3.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/q6.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/README.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/q4.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/q7.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/q1.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/q2.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/design/q0.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/value-of.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/map.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/stream.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/thenable.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/resolve-reject.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/spread.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/node.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/multiple-listeners.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/all.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/methods.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/promised-chains.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/reject.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/issue
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/issue/22.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/test/issue/9.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue/.package.json.un~
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue/readme.md
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue/event-queue.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue/.system.js.un~
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue/.event-queue.js.un~
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue/.event-loop.js.un~
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue/.readme.md.un~
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/node_modules/event-queue/package.json
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/step1.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/step2.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/view3.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/then1.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/join.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/view2.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/then3.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/view1.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/delay.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/step3.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/then2.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/shallow-deep.js
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/async-generators
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/async-generators/3-wishful-thinking.html
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/async-generators/0.html
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/async-generators/README.md
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/async-generators/2-error-propagation.html
+silly asyncMap in gTP /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/node_modules/q/examples/async-generators/1-return.html
+verbose gunzed /tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/index.js
+verbose rm'ed /tmp/npm-1338250379751/1338250379751-0.6990306975785643/package
+verbose renamed [ '/tmp/npm-1338250379751/1338250379751-0.6990306975785643/___package.npm/index.js',
+verbose renamed   '/tmp/npm-1338250379751/1338250379751-0.6990306975785643/package' ]
+ERR! couldn't unpack /tmp/npm-1338250379751/1338250379751-0.6990306975785643/tmp.tgz to /tmp/npm-1338250379751/1338250379751-0.6990306975785643
+ERR! Error: ENOTDIR, not a directory '/tmp/npm-1338250379751/1338250379751-0.6990306975785643/package/package.json'
+ERR! You may report this log at:
+ERR!     <http://github.com/isaacs/npm/issues>
+ERR! or email it to:
+ERR!     <npm-@googlegroups.com>
+ERR! 
+ERR! System Linux 2.6.32-41-generic
+ERR! command "node" "/usr/local/bin/npm" "install"
+ERR! cwd /home/kixx/Rprojects/fireworksproject/beacon/dist
+ERR! node -v v0.6.11
+ERR! npm -v 1.1.1
+ERR! path /tmp/npm-1338250379751/1338250379751-0.6990306975785643/package/package.json
+ERR! code ENOTDIR
+ERR! message ENOTDIR, not a directory '/tmp/npm-1338250379751/1338250379751-0.6990306975785643/package/package.json'
+ERR! errno {}
+verbose exit [ 1, true ]
