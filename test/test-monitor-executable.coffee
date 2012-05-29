@@ -30,7 +30,13 @@ it 'should run on command', (done) ->
 
     opts =
         command: 'dist/cli.js'
-        args: ['emailaddress', 'emailpassword', 'smsusername', 'smspassword']
+        args: [
+            'test/fixtures/conf.json'
+            'emailaddress'
+            'emailpassword'
+            'smsusername'
+            'smspassword'
+        ]
         buffer: on
 
     PROC.runCommand(opts).then(whenRunning).fail(done)

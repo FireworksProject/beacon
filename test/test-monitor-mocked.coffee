@@ -1,5 +1,5 @@
 describe 'init errors', ->
-    MON = require '../dist/lib/monitor'
+    BEACON = require '../dist'
 
     it 'should throw an error for missing mailUsername', (done) ->
         @expectCount(1)
@@ -9,9 +9,16 @@ describe 'init errors', ->
             mailPassword: 'anystring'
             smsUsername: 'anystring'
             smsPassword: 'anystring'
+            conf:
+                hostname: 'localhost'
+                port: 7272
+                mail_list: ["foo@example.com", "bar@example.com"]
+                sms_address: "5555555555"
+                sms_list: ["5555555555", "5555555555"]
+                heartbeat_timeout: 1
 
         try
-            MON.createMonitor(args)
+            BEACON.createMonitor(args)
         catch err
             expect(err.message).toBe('missing mail username argument')
 
@@ -26,9 +33,16 @@ describe 'init errors', ->
             mailPassword: null
             smsUsername: 'anystring'
             smsPassword: 'anystring'
+            conf:
+                hostname: 'localhost'
+                port: 7272
+                mail_list: ["foo@example.com", "bar@example.com"]
+                sms_address: "5555555555"
+                sms_list: ["5555555555", "5555555555"]
+                heartbeat_timeout: 1
 
         try
-            MON.createMonitor(args)
+            BEACON.createMonitor(args)
         catch err
             expect(err.message).toBe('missing mail password argument')
 
@@ -43,9 +57,16 @@ describe 'init errors', ->
             mailPassword: 'anystring'
             smsUsername: null
             smsPassword: 'anystring'
+            conf:
+                hostname: 'localhost'
+                port: 7272
+                mail_list: ["foo@example.com", "bar@example.com"]
+                sms_address: "5555555555"
+                sms_list: ["5555555555", "5555555555"]
+                heartbeat_timeout: 1
 
         try
-            MON.createMonitor(args)
+            BEACON.createMonitor(args)
         catch err
             expect(err.message).toBe('missing SMS username argument')
 
@@ -60,9 +81,16 @@ describe 'init errors', ->
             mailPassword: 'anystring'
             smsUsername: 'anystring'
             smsPassword: null
+            conf:
+                hostname: 'localhost'
+                port: 7272
+                mail_list: ["foo@example.com", "bar@example.com"]
+                sms_address: "5555555555"
+                sms_list: ["5555555555", "5555555555"]
+                heartbeat_timeout: 1
 
         try
-            MON.createMonitor(args)
+            BEACON.createMonitor(args)
         catch err
             expect(err.message).toBe('missing SMS password argument')
 
@@ -77,7 +105,7 @@ describe 'mock functionality', ->
     TEL = require '../dist/node_modules/telegram'
     MAIL = require '../dist/node_modules/nodemailer'
     SMS = require '../dist/node_modules/q-smsified'
-    MON = require '../dist/lib/monitor'
+    BEACON = require '../dist'
 
     gMailCreateTransport = MAIL.createTransport
     gSMSSession = SMS.Session
@@ -91,7 +119,14 @@ describe 'mock functionality', ->
             mailPassword: TESTARGV.mail_password
             smsUsername: TESTARGV.sms_username
             smsPassword: TESTARGV.sms_password
-        gMonitor = MON.createMonitor args, (err, monitor) ->
+            conf:
+                hostname: 'localhost'
+                port: 7272
+                mail_list: ["foo@example.com", "bar@example.com"]
+                sms_address: "5555555555"
+                sms_list: ["5555555555", "5555555555"]
+                heartbeat_timeout: 1
+        gMonitor = BEACON.createMonitor args, (err, monitor) ->
             return callback(gMonitor)
         return
 

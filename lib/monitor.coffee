@@ -4,14 +4,12 @@ TEL = require 'telegram'
 MAIL = require 'nodemailer'
 SMS = require 'q-smsified'
 
-CONFDIR = '/etc/saks-monitor'
-
 exports.createMonitor = (aArgs, aCallback) ->
     self = new EventEmitter
     mTelegramServer = null
     mMailTransport = null
 
-    {args, conf} = sanityCheck(aArgs, "#{CONFDIR}/conf.json")
+    {args, conf} = sanityCheck(aArgs)
     mConf = conf
     mArgs = args
 
@@ -111,7 +109,7 @@ exports.createMonitor = (aArgs, aCallback) ->
     return self
 
 
-sanityCheck = (args, aConfpath) ->
+sanityCheck = (args) ->
     if not args.mailUsername
         throw new Error("missing mail username argument")
 
@@ -124,11 +122,7 @@ sanityCheck = (args, aConfpath) ->
     if not args.smsPassword
         throw new Error("missing SMS password argument")
 
-    try
-        conf = require aConfpath
-    catch readErr
-        msg = "syntax error in config file #{aConfpath} : #{readErr.message}"
-        throw new Error(msg)
+    conf = args.conf or {}
 
     if not conf.port or typeof conf.port isnt 'number'
         throw new Error("invalid conf.port")

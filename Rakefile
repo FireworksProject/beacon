@@ -6,6 +6,7 @@ desc "Build App-Monitor"
 build_deps = [
     'dist/package.json',
     'dist/lib/monitor.js',
+    'dist/index.js',
     'dist/cli.js'
 ]
 task :build => build_deps do
@@ -48,6 +49,10 @@ file 'dist/package.json' => ['package.json', 'dist'] do |task|
         ok or fail "npm could not install the monitor dependencies"
     end
     Dir.chdir ROOT
+end
+
+file 'dist/index.js' => ['index.coffee', 'dist'] do |task|
+    brew_javascript task.prerequisites.first, task.name
 end
 
 file 'dist/lib/monitor.js' => ['lib/monitor.coffee', 'dist/lib'] do |task|
