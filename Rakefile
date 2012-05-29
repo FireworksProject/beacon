@@ -5,7 +5,8 @@ task :default => :build
 desc "Build App-Monitor"
 build_deps = [
     'dist/package.json',
-    'dist/lib/monitor.js'
+    'dist/lib/monitor.js',
+    'dist/cli.js'
 ]
 task :build => build_deps do
     puts "Built App-Monitor"
@@ -51,6 +52,11 @@ end
 
 file 'dist/lib/monitor.js' => ['lib/monitor.coffee', 'dist/lib'] do |task|
     brew_javascript task.prerequisites.first, task.name
+end
+
+file 'dist/cli.js' => ['cli.coffee', 'dist'] do |task|
+    brew_javascript task.prerequisites.first, task.name, true
+    File.chmod(0764, task.name)
 end
 
 def npm_install(package)

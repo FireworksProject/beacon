@@ -1,24 +1,10 @@
 EventEmitter = require('events').EventEmitter
 
-Logger = require 'bunyan'
 TEL = require 'telegram'
 MAIL = require 'nodemailer'
 SMS = require 'q-smsified'
 
-LOG = new Logger({
-    name: 'monitor'
-    streams: [
-        {level: 'info', stream: process.stdout}
-        {level: 'error', stream: process.stderr}
-    ]
-})
-
 CONFDIR = '/etc/saks-monitor'
-
-MAIL_USERNAME = process.argv[2]
-MAIL_PASSWORD = process.argv[3]
-SMS_USERNAME = process.argv[4]
-SMS_PASSWORD = process.argv[5]
 
 exports.createMonitor = (aArgs, aCallback) ->
     self = new EventEmitter
@@ -26,12 +12,12 @@ exports.createMonitor = (aArgs, aCallback) ->
     mMailTransport = null
 
     {args, conf} = sanityCheck(aArgs, "#{CONFDIR}/conf.json")
-    CONF = conf
-    ARGS = args
+    mConf = conf
+    mArgs = args
 
     mTelegramServer = TEL.createServer()
 
-    mTelegramServer.listen CONF.port, CONF.hostname, ->
+    mTelegramServer.listen mConf.port, mConf.hostname, ->
         return aCallback(null, {telegramServer: mTelegramServer})
 
 
@@ -55,8 +41,8 @@ exports.createMonitor = (aArgs, aCallback) ->
 
     sendMail = (aSubject, aBody) ->
         opts =
-            from: "SAKS Monitor <#{ARGS.MAIL_USERNAME}>"
-            to: CONF.mail_list.join(', ')
+            from: "SAKS Monitor <#{mArgs.mailUsername}>"
+            to: mConf.mail_list.join(', ')
             subject: aSubject
             text: aBody
 
@@ -84,7 +70,7 @@ exports.createMonitor = (aArgs, aCallback) ->
             self.emit 'log', "SMS Message: #{res.data.resourceURL}"
             return
 
-        for target in CONF.sms_list
+        for target in mConf.sms_list
             mSMSSession.send(target, aBody).then(log).fail (err) ->
                 err.message = "Error sending SMS notification: #{err.message}"
                 self.emit 'error', err
@@ -94,14 +80,14 @@ exports.createMonitor = (aArgs, aCallback) ->
 
     mMailTransport = MAIL.createTransport('SMTP', {
             service: 'Gmail'
-            auth: {user: ARGS.MAIL_USERNAME, pass: ARGS.MAIL_PASSWORD}
+            auth: {user: mArgs.mailUsername, pass: mArgs.mailPassword}
         })
 
 
     mSMSSession = new SMS.Session({
-        username: ARGS.SMS_USERNAME
-        password: ARGS.SMS_PASSWORD
-        address: CONF.sms_address
+        username: mArgs.smsUsername
+        password: mArgs.smsPassword
+        address: mConf.sms_address
     })
 
 
@@ -112,7 +98,7 @@ exports.createMonitor = (aArgs, aCallback) ->
             timeout = setTimeout(->
                 sendSMS('heartbeat timeout')
                 sendMail('TIMEOUT from webserver', 'heartbeat timeout')
-            , CONF.heartbeat_timeout * 1000)
+            , mConf.heartbeat_timeout * 1000)
             return
         return clear
 
@@ -126,16 +112,16 @@ exports.createMonitor = (aArgs, aCallback) ->
 
 
 sanityCheck = (args, aConfpath) ->
-    if not args.MAIL_USERNAME
+    if not args.mailUsername
         throw new Error("missing mail username argument")
 
-    if not args.MAIL_PASSWORD
+    if not args.mailPassword
         throw new Error("missing mail password argument")
 
-    if not args.SMS_USERNAME
+    if not args.smsUsername
         throw new Error("missing SMS username argument")
 
-    if not args.SMS_PASSWORD
+    if not args.smsPassword
         throw new Error("missing SMS password argument")
 
     try
@@ -163,20 +149,3 @@ sanityCheck = (args, aConfpath) ->
         conf.heartbeat_timeout = 1
 
     return {args: args, conf: conf}
-
-
-if module is require.main
-    process.title = 'saks-monitor'
-    args =
-        MAIL_USERNAME: MAIL_USERNAME
-        MAIL_PASSWORD: MAIL_PASSWORD
-        SMS_USERNAME: SMS_USERNAME
-        SMS_PASSWORD: SMS_PASSWORD
-
-    monitor = exports.monitor args, (err, info) ->
-        {address, port} = info.telegramServer.address()
-        LOG.info "telegram server running at #{address}:#{port}"
-        return
-
-    monitor.on 'error', (err) -> LOG.error(err)
-    monitor.on 'log', (msg) -> LOG.info(msg)

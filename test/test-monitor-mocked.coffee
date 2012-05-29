@@ -1,14 +1,14 @@
 describe 'init errors', ->
     MON = require '../dist/lib/monitor'
 
-    it 'should throw an error for missing MAIL_USERNAME', (done) ->
+    it 'should throw an error for missing mailUsername', (done) ->
         @expectCount(1)
 
         args =
-            MAIL_USERNAME: null
-            MAIL_PASSWORD: 'anystring'
-            SMS_USERNAME: 'anystring'
-            SMS_PASSWORD: 'anystring'
+            mailUsername: null
+            mailPassword: 'anystring'
+            smsUsername: 'anystring'
+            smsPassword: 'anystring'
 
         try
             MON.createMonitor(args)
@@ -18,14 +18,14 @@ describe 'init errors', ->
         return done()
 
 
-    it 'should throw an error for missing MAIL_PASSWORD', (done) ->
+    it 'should throw an error for missing mailPassword', (done) ->
         @expectCount(1)
 
         args =
-            MAIL_USERNAME: 'anystring'
-            MAIL_PASSWORD: null
-            SMS_USERNAME: 'anystring'
-            SMS_PASSWORD: 'anystring'
+            mailUsername: 'anystring'
+            mailPassword: null
+            smsUsername: 'anystring'
+            smsPassword: 'anystring'
 
         try
             MON.createMonitor(args)
@@ -35,14 +35,14 @@ describe 'init errors', ->
         return done()
 
 
-    it 'should throw an error for missing SMS_USERNAME', (done) ->
+    it 'should throw an error for missing smsUsername', (done) ->
         @expectCount(1)
 
         args =
-            MAIL_USERNAME: 'anystring'
-            MAIL_PASSWORD: 'anystring'
-            SMS_USERNAME: null
-            SMS_PASSWORD: 'anystring'
+            mailUsername: 'anystring'
+            mailPassword: 'anystring'
+            smsUsername: null
+            smsPassword: 'anystring'
 
         try
             MON.createMonitor(args)
@@ -52,14 +52,14 @@ describe 'init errors', ->
         return done()
 
 
-    it 'should throw an error for missing SMS_PASSWORD', (done) ->
+    it 'should throw an error for missing smsPassword', (done) ->
         @expectCount(1)
 
         args =
-            MAIL_USERNAME: 'anystring'
-            MAIL_PASSWORD: 'anystring'
-            SMS_USERNAME: 'anystring'
-            SMS_PASSWORD: null
+            mailUsername: 'anystring'
+            mailPassword: 'anystring'
+            smsUsername: 'anystring'
+            smsPassword: null
 
         try
             MON.createMonitor(args)
@@ -87,10 +87,10 @@ describe 'mock functionality', ->
 
     startMonitor = (callback) ->
         args =
-            MAIL_USERNAME: TESTARGV.mail_username
-            MAIL_PASSWORD: TESTARGV.mail_password
-            SMS_USERNAME: TESTARGV.sms_username
-            SMS_PASSWORD: TESTARGV.sms_password
+            mailUsername: TESTARGV.mail_username
+            mailPassword: TESTARGV.mail_password
+            smsUsername: TESTARGV.sms_username
+            smsPassword: TESTARGV.sms_password
         gMonitor = MON.createMonitor args, (err, monitor) ->
             return callback(gMonitor)
         return
@@ -118,3 +118,222 @@ describe 'mock functionality', ->
 
         startMonitor (monitor) -> return done()
         return
+
+
+    it 'should create a mail transport', (done) ->
+        @expectCount(4)
+
+        MAIL.createTransport = (type, opts) ->
+            expect(type).toBe('SMTP')
+            expect(opts.service).toBe('Gmail')
+            expect(opts.auth.user).toBe(TESTARGV.mail_username)
+            expect(opts.auth.pass).toBe(TESTARGV.mail_password)
+
+            transport = {}
+            transport.close = (callback) ->
+                return callback()
+            return transport
+
+        startMonitor (monitor) -> return done()
+        return
+
+
+    it 'should send out warning emails', (done) ->
+        @expectCount(5)
+        warningMessage = "This is a warning message"
+
+        MAIL.createTransport = ->
+            transport = {}
+
+            transport.close = (callback) ->
+                return callback()
+
+            transport.sendMail = (opts, callback) ->
+                expect(opts.from).toBe(gFromEmail)
+                expect(opts.to).toBe(gToEmail)
+                expect(opts.subject).toBe('WARNING from webserver')
+                expect(opts.text).toBe(warningMessage)
+                callback(null, {message: "sent"})
+                return
+
+            return transport
+
+        startMonitor (monitor) ->
+            monitor.on 'log', (msg) ->
+                if /^Email\sMessage:/.test(msg)
+                    expect(msg).toBe("Email Message: sent")
+                    return done()
+                return
+
+            connection = TEL.connect 7272, 'localhost', ->
+                channel = connection.createChannel('warning')
+                process.nextTick ->
+                    channel.publish(JSON.stringify({stack: warningMessage}))
+                    return
+                return
+            return
+        return
+
+
+    it 'should send out failure email and SMS', (done) ->
+        @expectCount(11)
+        failureStack = "This is an error stack trace"
+        failureMessage = "This is an error message"
+
+        SMS.Session = (spec) ->
+            session = {}
+            session.send = (target, message) ->
+                expect(target).toBe('5555555555')
+                expect(message).toBe(failureMessage)
+
+                deferred = Q.defer()
+                deferred.resolve({code: 201, data: {resourceURL: "http://foo"}})
+                return deferred.promise
+            return session
+
+        MAIL.createTransport = ->
+            transport = {}
+
+            transport.close = (callback) ->
+                return callback()
+
+            transport.sendMail = (opts, callback) ->
+                expect(opts.from).toBe(gFromEmail)
+                expect(opts.to).toBe(gToEmail)
+                expect(opts.subject).toBe('FAILURE from webserver')
+                expect(opts.text).toBe(failureStack)
+                callback(null, {message: "sent"})
+                return
+
+            return transport
+
+        startMonitor (monitor) ->
+            smscount = 0
+            monitor.on 'log', (msg) ->
+                if /^Email\sMessage:/.test(msg)
+                    expect(msg).toBe("Email Message: sent")
+                if /^SMS\sMessage:/.test(msg)
+                    expect(msg).toBe("SMS Message: http://foo")
+                    smscount += 1
+                    if smscount is 2 then return done()
+                return
+
+            connection = TEL.connect 7272, 'localhost', ->
+                channel = connection.createChannel('failure')
+                process.nextTick ->
+                    msg = {stack: failureStack, message: failureMessage}
+                    channel.publish(JSON.stringify(msg))
+                    return
+                return
+            return
+        return
+
+
+    it 'should send heartbeat timeout email and SMS', (done) ->
+        @expectCount(11)
+        failureMessage = 'heartbeat timeout'
+
+        SMS.Session = (spec) ->
+            session = {}
+            session.send = (target, message) ->
+                expect(target).toBe('5555555555')
+                expect(message).toBe(failureMessage)
+
+                deferred = Q.defer()
+                deferred.resolve({code: 201, data: {resourceURL: "http://foo"}})
+                return deferred.promise
+            return session
+
+        MAIL.createTransport = ->
+            transport = {}
+
+            transport.close = (callback) ->
+                return callback()
+
+            transport.sendMail = (opts, callback) ->
+                expect(opts.from).toBe(gFromEmail)
+                expect(opts.to).toBe(gToEmail)
+                expect(opts.subject).toBe('TIMEOUT from webserver')
+                expect(opts.text).toBe(failureMessage)
+                callback(null, {message: "sent"})
+                return
+
+            return transport
+
+        startMonitor (monitor) ->
+            smscount = 0
+
+            monitor.on 'log', (msg) ->
+                if /^Email\sMessage:/.test(msg)
+                    expect(msg).toBe("Email Message: sent")
+                if /^SMS\sMessage:/.test(msg)
+                    smscount += 1
+                    expect(msg).toBe("SMS Message: http://foo")
+                    if smscount is 2 then return done()
+                    return
+                return
+
+            connection = TEL.connect 7272, 'localhost', ->
+                channel = connection.createChannel('heartbeat')
+                process.nextTick ->
+                    channel.publish('ok')
+                    return
+                return
+            return
+        return
+
+
+    it 'should emit SMS and Email service errors', (done) ->
+        @expectCount(5)
+
+        SMS.Session = (spec) ->
+            session = {}
+            session.send = (target, message) ->
+                deferred = Q.defer()
+                serviceException =
+                    errorCode: 'SVC001'
+                    msg: "Unauthenticated"
+                requestError = {serviceException: serviceException}
+                deferred.resolve({code: 401, data: {requestError: requestError}})
+                return deferred.promise
+            return session
+
+        MAIL.createTransport = ->
+            transport = {}
+
+            transport.close = (callback) ->
+                return callback()
+
+            transport.sendMail = (opts, callback) ->
+                callback(new Error("Invalid User"))
+                return
+
+            return transport
+
+        startMonitor (monitor) ->
+            messageCount = 0
+            monitor.on 'error', (err) ->
+                messageCount += 1
+
+                if /^Error\ssending\semail/.test(err.message)
+                    expect(err.message).toBe("Error sending email notification: Invalid User")
+
+                if err.err
+                    expect(err.err.message).toBe('Unexpected response from SMS service')
+                    expect(err.err.code).toBe(401)
+
+                if messageCount is 3 then return done()
+                return
+
+            connection = TEL.connect 7272, 'localhost', ->
+                channel = connection.createChannel('failure')
+                process.nextTick ->
+                    msg = {stack: 'stack', message: 'message'}
+                    channel.publish(JSON.stringify(msg))
+                    return
+                return
+            return
+        return
+
+
+    return
