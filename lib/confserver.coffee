@@ -4,8 +4,7 @@ EventEmitter = require('events').EventEmitter
 exports.createServer = (aOpts, aCallback) ->
     port = aOpts.port or 8080
     hostname = aOpts.hostname or 'localhost'
-    datadir = aOpts.datadir
-    monitor = aOpts.clientMonitor
+    monitor = aOpts.webappMonitor
     webappChannel = monitor.createChannel('webapp_conf')
     emitter = new EventEmitter()
 

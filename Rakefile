@@ -6,6 +6,7 @@ desc "Build App-Monitor"
 build_deps = [
     'dist/package.json',
     'dist/lib/monitor.js',
+    'dist/lib/confserver.js',
     'dist/index.js',
     'dist/cli.js'
 ]
@@ -56,6 +57,10 @@ file 'dist/index.js' => ['index.coffee', 'dist'] do |task|
 end
 
 file 'dist/lib/monitor.js' => ['lib/monitor.coffee', 'dist/lib'] do |task|
+    brew_javascript task.prerequisites.first, task.name
+end
+
+file 'dist/lib/confserver.js' => ['lib/confserver.coffee', 'dist/lib'] do |task|
     brew_javascript task.prerequisites.first, task.name
 end
 
