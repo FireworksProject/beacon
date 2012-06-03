@@ -7,6 +7,9 @@ SMS = require 'q-smsified'
 
 
 exports.createServer = (aOpts, aCallback) ->
+    requestHandler = (req, res) ->
+        return
+
     server = HTTP.createServer(requestHandler)
 
     {host, port} = sanityCheck(aOpts)
@@ -19,12 +22,40 @@ exports.createServer = (aOpts, aCallback) ->
 
 exports.createMonitor = (aArgs, aCallback) ->
     self = new EventEmitter
+    mArgs = aArgs
+    mConf = aArgs.conf or {}
     mTelegramServer = null
     mMailTransport = null
 
-    {args, conf} = sanityCheck(aArgs)
-    mConf = conf
-    mArgs = args
+    if not aArgs.mailUsername
+        throw new Error("missing mail username argument")
+
+    if not aArgs.mailPassword
+        throw new Error("missing mail password argument")
+
+    if not aArgs.smsUsername
+        throw new Error("missing SMS username argument")
+
+    if not aArgs.smsPassword
+        throw new Error("missing SMS password argument")
+
+    if not mConf.port or typeof mConf.port isnt 'number'
+        throw new Error("invalid conf.port")
+
+    if not mConf.hostname or typeof mConf.hostname isnt 'string'
+        throw new Error("invalid conf.hostname")
+
+    if not mConf.sms_address or parseInt(mConf.sms_address) is NaN
+        throw new Error("invalid conf.sms_address")
+
+    if not Array.isArray(mConf.mail_list)
+        throw new Error("invalid conf.mail_list")
+
+    if not Array.isArray(mConf.sms_list)
+        throw new Error("invalid conf.sms_list")
+
+    if not mConf.heartbeat_timeout or typeof mConf.heartbeat_timeout isnt 'number'
+        mConf.heartbeat_timeout = 1
 
     mTelegramServer = TEL.createServer()
 
@@ -120,39 +151,3 @@ exports.createMonitor = (aArgs, aCallback) ->
         return
 
     return self
-
-
-sanityCheck = (args) ->
-    if not args.mailUsername
-        throw new Error("missing mail username argument")
-
-    if not args.mailPassword
-        throw new Error("missing mail password argument")
-
-    if not args.smsUsername
-        throw new Error("missing SMS username argument")
-
-    if not args.smsPassword
-        throw new Error("missing SMS password argument")
-
-    conf = args.conf or {}
-
-    if not conf.port or typeof conf.port isnt 'number'
-        throw new Error("invalid conf.port")
-
-    if not conf.hostname or typeof conf.hostname isnt 'string'
-        throw new Error("invalid conf.hostname")
-
-    if not conf.sms_address or parseInt(conf.sms_address) is NaN
-        throw new Error("invalid conf.sms_address")
-
-    if not Array.isArray(conf.mail_list)
-        throw new Error("invalid conf.mail_list")
-
-    if not Array.isArray(conf.sms_list)
-        throw new Error("invalid conf.sms_list")
-
-    if not conf.heartbeat_timeout or typeof conf.heartbeat_timeout isnt 'number'
-        conf.heartbeat_timeout = 1
-
-    return {args: args, conf: conf}
