@@ -7,7 +7,7 @@ exports.createServer = (aOpts, aCallback) ->
     restartTimeout = if typeof aOpts.restartTimeout is 'number'
         aOpts.restartTimeout
     else 7000
-    monitor = aOpts.webappMonitor
+    monitor = aOpts.monitor
     webappChannel = monitor.createChannel('webapp_conf')
     emitter = new EventEmitter()
 

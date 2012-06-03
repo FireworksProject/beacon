@@ -5,6 +5,7 @@ task :default => :build
 desc "Build App-Monitor"
 build_deps = [
     'dist/package.json',
+    'dist/lib/notifications.js',
     'dist/lib/monitor.js',
     'dist/lib/confserver.js',
     'dist/index.js',
@@ -53,6 +54,10 @@ file 'dist/package.json' => ['package.json', 'dist'] do |task|
 end
 
 file 'dist/index.js' => ['index.coffee', 'dist'] do |task|
+    brew_javascript task.prerequisites.first, task.name
+end
+
+file 'dist/lib/notifications.js' => ['lib/notifications.coffee', 'dist/lib'] do |task|
     brew_javascript task.prerequisites.first, task.name
 end
 

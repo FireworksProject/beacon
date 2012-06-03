@@ -25,7 +25,7 @@ describe 'mocked tests', ->
         opts =
             port: null # Defaults to 8080
             hostname: null # Defaults to 'localhost'
-            webappMonitor: aMonitor
+            monitor: aMonitor
 
         if typeof aOpts is 'object'
             for own p, v of aOpts
@@ -37,7 +37,9 @@ describe 'mocked tests', ->
 
 
     afterEach (done) ->
+        if gServer is null then return done()
         gServer.on 'close', ->
+            gServer = null
             return done()
         gServer.close()
         return

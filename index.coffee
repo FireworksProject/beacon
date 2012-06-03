@@ -3,25 +3,36 @@ PATH = require 'path'
 EventEmitter = require('events').EventEmitter
 
 MON = require './lib/monitor'
+NOTE = require './lib/notifications'
+CSRV = require './lib/confserver'
 
 
-exports.createService = (args, callback) ->
+exports.createService = (args, aCallback) ->
     service = new EventEmitter()
     args.conf = loadConf(args.confpath)
 
-    service.monitor = MON.createMonitor args, (err, info) ->
-        callback(err, info)
-        return
-    service.monitor.on 'error', (err) ->
-        service.emit('error', err)
-        return
-    service.monitor.on 'log', (msg) ->
-        service.emit('log', msg)
-        return
+    notifications = NOTE.notifications(args)
+    service.notifications = args.notifications = notifications
 
-    service.close = (callback) ->
-        monitor.close(callback)
+    notifications.on 'error', (err) ->
+        return service.emit('error', err)
+
+    notifications.on 'log', (msg) ->
+        return service.emit('log', msg)
+
+    monitor = MON.createMonitor args, (err, info) ->
+        confserver = CSRV.createServer args, (addr) ->
+            service.close = (callback) ->
+                confserver.close ->
+                    monitor.close ->
+                        notifications.close(callback)
+                        return
+                    return
+                return
+            aCallback(err, info)
+            return
         return
+    service.montitor = args.monitor = monitor
 
     return service
 
