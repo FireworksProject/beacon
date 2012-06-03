@@ -5,7 +5,7 @@ task :default => :build
 desc "Build App-Monitor"
 build_deps = [
     'dist/package.json',
-    'dist/lib/beacon.js',
+    'dist/lib/monitor.js',
     'dist/index.js',
     'dist/cli.js'
 ]
@@ -55,7 +55,7 @@ file 'dist/index.js' => ['index.coffee', 'dist'] do |task|
     brew_javascript task.prerequisites.first, task.name
 end
 
-file 'dist/lib/beacon.js' => ['lib/beacon.coffee', 'dist/lib'] do |task|
+file 'dist/lib/monitor.js' => ['lib/monitor.coffee', 'dist/lib'] do |task|
     brew_javascript task.prerequisites.first, task.name
 end
 

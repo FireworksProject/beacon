@@ -1,11 +1,15 @@
+<<<<<<< HEAD:lib/beacon.coffee
 FS = rquire 'fs'
 HTTP = require 'http'
+=======
+>>>>>>> 35e1dc7... refactor into one library file:lib/monitor.coffee
 EventEmitter = require('events').EventEmitter
 
 TEL = require 'telegram'
 MAIL = require 'nodemailer'
 SMS = require 'q-smsified'
 
+<<<<<<< HEAD:lib/beacon.coffee
 
 exports.createServer = (aOpts, aCallback) ->
     port = aOpts.port or 8080
@@ -59,6 +63,8 @@ exports.createServer = (aOpts, aCallback) ->
     return server
 
 
+=======
+>>>>>>> 35e1dc7... refactor into one library file:lib/monitor.coffee
 exports.createMonitor = (aArgs, aCallback) ->
     self = new EventEmitter
     mArgs = aArgs
