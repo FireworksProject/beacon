@@ -2,7 +2,7 @@ FS = require 'fs'
 PATH = require 'path'
 EventEmitter = require('events').EventEmitter
 
-MON = require './lib/monitor'
+SELF = require './lib/beacon'
 
 
 exports.createService = (args, callback) ->
@@ -26,7 +26,7 @@ exports.createService = (args, callback) ->
     return service
 
 
-exports.createMonitor = MON.createMonitor
+exports.createMonitor = SELF.createMonitor
 
 
 loadConf = (confpath) ->

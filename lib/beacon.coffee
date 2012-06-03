@@ -1,8 +1,21 @@
+HTTP = require 'http'
 EventEmitter = require('events').EventEmitter
 
 TEL = require 'telegram'
 MAIL = require 'nodemailer'
 SMS = require 'q-smsified'
+
+
+exports.createServer = (aOpts, aCallback) ->
+    server = HTTP.createServer(requestHandler)
+
+    {host, port} = sanityCheck(aOpts)
+
+    server.listen port, hostname, ->
+        return aCallback(server.address())
+
+    return server
+
 
 exports.createMonitor = (aArgs, aCallback) ->
     self = new EventEmitter
