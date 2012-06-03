@@ -4,6 +4,9 @@ EventEmitter = require('events').EventEmitter
 exports.createServer = (aOpts, aCallback) ->
     port = aOpts.port or 8080
     hostname = aOpts.hostname or 'localhost'
+    restartTimeout = if typeof aOpts.restartTimeout is 'number'
+        aOpts.restartTimeout
+    else 7000
     monitor = aOpts.webappMonitor
     webappChannel = monitor.createChannel('webapp_conf')
     emitter = new EventEmitter()
@@ -47,7 +50,7 @@ exports.createServer = (aOpts, aCallback) ->
     commitAppChanges = (conf, res) ->
         # TODO: handle conf validation errors
         appname = conf.name
-        timeout = setTimeout(respondFail, 7000)
+        timeout = null
 
         onAppRestart = (msg) ->
             if msg isnt appname then return
@@ -81,6 +84,7 @@ exports.createServer = (aOpts, aCallback) ->
             return
 
         emitter.on('webapp_restart', onAppRestart)
+        timeout = setTimeout(respondFail, restartTimeout)
         webappChannel.publish(appname)
         return
 

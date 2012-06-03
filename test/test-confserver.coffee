@@ -17,13 +17,22 @@ describe 'mocked tests', ->
 
     class MockedChannel
 
+        publish: (message) ->
+            return
 
-    createServer = (monitor, callback) ->
+
+    createServer = (aMonitor, aOpts, aCallback) ->
         opts =
             port: null # Defaults to 8080
             hostname: null # Defaults to 'localhost'
-            webappMonitor: monitor
-        gServer = SRV.createServer(opts, callback)
+            webappMonitor: aMonitor
+
+        if typeof aOpts is 'object'
+            for own p, v of aOpts
+                opts[p] = v
+        else aCallback = aOpts
+
+        gServer = SRV.createServer(opts, aCallback)
         return gServer
 
 
@@ -56,6 +65,22 @@ describe 'mocked tests', ->
             return
 
         createServer(new MockedMonitor(), test)
+        return
+
+
+    it 'should timeout if the webapp server does not respond to a restart', (done) ->
+        test = ->
+            opts =
+                uri: 'http://localhost:8080'
+                body: JSON.stringify({name: 'myapp'})
+            REQ.post opts, (err, res, body) ->
+                expect(res.statusCode).toBe(504)
+                body = JSON.parse(body)
+                expect(body.result).toBe('myapp did not restart')
+                return done()
+            return
+
+        createServer(new MockedMonitor(), {restartTimeout: 0}, test)
         return
 
     return
