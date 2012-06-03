@@ -9,7 +9,7 @@ exports.createService = (args, callback) ->
     service = new EventEmitter()
     args.conf = loadConf(args.confpath)
 
-    service.monitor = exports.createMonitor args, (err, info) ->
+    service.monitor = MON.createMonitor args, (err, info) ->
         callback(err, info)
         return
     service.monitor.on 'error', (err) ->
@@ -24,9 +24,6 @@ exports.createService = (args, callback) ->
         return
 
     return service
-
-
-exports.createMonitor = MON.createMonitor
 
 
 loadConf = (confpath) ->

@@ -1,5 +1,13 @@
+DEFAULT_TEST_CONF =
+    hostname: 'localhost'
+    port: 7272
+    mail_list: ["foo@example.com", "bar@example.com"]
+    sms_address: "5555555555"
+    sms_list: ["5555555555", "5555555555"]
+    heartbeat_timeout: 1
+
 describe 'init errors', ->
-    BEACON = require '../dist'
+    MON = require '../dist/lib/monitor'
 
     it 'should throw an error for missing mailUsername', (done) ->
         @expectCount(1)
@@ -9,16 +17,10 @@ describe 'init errors', ->
             mailPassword: 'anystring'
             smsUsername: 'anystring'
             smsPassword: 'anystring'
-            conf:
-                hostname: 'localhost'
-                port: 7272
-                mail_list: ["foo@example.com", "bar@example.com"]
-                sms_address: "5555555555"
-                sms_list: ["5555555555", "5555555555"]
-                heartbeat_timeout: 1
+            conf: DEFAULT_TEST_CONF
 
         try
-            BEACON.createMonitor(args)
+            MON.createMonitor(args)
         catch err
             expect(err.message).toBe('missing mail username argument')
 
@@ -33,16 +35,10 @@ describe 'init errors', ->
             mailPassword: null
             smsUsername: 'anystring'
             smsPassword: 'anystring'
-            conf:
-                hostname: 'localhost'
-                port: 7272
-                mail_list: ["foo@example.com", "bar@example.com"]
-                sms_address: "5555555555"
-                sms_list: ["5555555555", "5555555555"]
-                heartbeat_timeout: 1
+            conf: DEFAULT_TEST_CONF
 
         try
-            BEACON.createMonitor(args)
+            MON.createMonitor(args)
         catch err
             expect(err.message).toBe('missing mail password argument')
 
@@ -57,16 +53,10 @@ describe 'init errors', ->
             mailPassword: 'anystring'
             smsUsername: null
             smsPassword: 'anystring'
-            conf:
-                hostname: 'localhost'
-                port: 7272
-                mail_list: ["foo@example.com", "bar@example.com"]
-                sms_address: "5555555555"
-                sms_list: ["5555555555", "5555555555"]
-                heartbeat_timeout: 1
+            conf: DEFAULT_TEST_CONF
 
         try
-            BEACON.createMonitor(args)
+            MON.createMonitor(args)
         catch err
             expect(err.message).toBe('missing SMS username argument')
 
@@ -81,16 +71,10 @@ describe 'init errors', ->
             mailPassword: 'anystring'
             smsUsername: 'anystring'
             smsPassword: null
-            conf:
-                hostname: 'localhost'
-                port: 7272
-                mail_list: ["foo@example.com", "bar@example.com"]
-                sms_address: "5555555555"
-                sms_list: ["5555555555", "5555555555"]
-                heartbeat_timeout: 1
+            conf: DEFAULT_TEST_CONF
 
         try
-            BEACON.createMonitor(args)
+            MON.createMonitor(args)
         catch err
             expect(err.message).toBe('missing SMS password argument')
 
@@ -105,7 +89,7 @@ describe 'mock functionality', ->
     TEL = require '../dist/node_modules/telegram'
     MAIL = require '../dist/node_modules/nodemailer'
     SMS = require '../dist/node_modules/q-smsified'
-    BEACON = require '../dist'
+    MON = require '../dist/lib/monitor'
 
     gMailCreateTransport = MAIL.createTransport
     gSMSSession = SMS.Session
@@ -119,14 +103,8 @@ describe 'mock functionality', ->
             mailPassword: TESTARGV.mail_password
             smsUsername: TESTARGV.sms_username
             smsPassword: TESTARGV.sms_password
-            conf:
-                hostname: 'localhost'
-                port: 7272
-                mail_list: ["foo@example.com", "bar@example.com"]
-                sms_address: "5555555555"
-                sms_list: ["5555555555", "5555555555"]
-                heartbeat_timeout: 1
-        gMonitor = BEACON.createMonitor args, (err, monitor) ->
+            conf: DEFAULT_TEST_CONF
+        gMonitor = MON.createMonitor args, (err, monitor) ->
             return callback(gMonitor)
         return
 
@@ -200,7 +178,8 @@ describe 'mock functionality', ->
                     return done()
                 return
 
-            connection = TEL.connect 7272, 'localhost', ->
+            {port, hostname} = DEFAULT_TEST_CONF
+            connection = TEL.connect port, hostname, ->
                 channel = connection.createChannel('warning')
                 process.nextTick ->
                     channel.publish(JSON.stringify({stack: warningMessage}))
@@ -218,7 +197,7 @@ describe 'mock functionality', ->
         SMS.Session = (spec) ->
             session = {}
             session.send = (target, message) ->
-                expect(target).toBe('5555555555')
+                expect(target).toBe(DEFAULT_TEST_CONF.sms_address)
                 expect(message).toBe(failureMessage)
 
                 deferred = Q.defer()
@@ -253,7 +232,8 @@ describe 'mock functionality', ->
                     if smscount is 2 then return done()
                 return
 
-            connection = TEL.connect 7272, 'localhost', ->
+            {port, hostname} = DEFAULT_TEST_CONF
+            connection = TEL.connect port, hostname, ->
                 channel = connection.createChannel('failure')
                 process.nextTick ->
                     msg = {stack: failureStack, message: failureMessage}
@@ -271,7 +251,7 @@ describe 'mock functionality', ->
         SMS.Session = (spec) ->
             session = {}
             session.send = (target, message) ->
-                expect(target).toBe('5555555555')
+                expect(target).toBe(DEFAULT_TEST_CONF.sms_address)
                 expect(message).toBe(failureMessage)
 
                 deferred = Q.defer()
@@ -308,7 +288,8 @@ describe 'mock functionality', ->
                     return
                 return
 
-            connection = TEL.connect 7272, 'localhost', ->
+            {port, hostname} = DEFAULT_TEST_CONF
+            connection = TEL.connect port, hostname, ->
                 channel = connection.createChannel('heartbeat')
                 process.nextTick ->
                     channel.publish('ok')
@@ -360,7 +341,8 @@ describe 'mock functionality', ->
                 if messageCount is 3 then return done()
                 return
 
-            connection = TEL.connect 7272, 'localhost', ->
+            {port, hostname} = DEFAULT_TEST_CONF
+            connection = TEL.connect port, hostname, ->
                 channel = connection.createChannel('failure')
                 process.nextTick ->
                     msg = {stack: 'stack', message: 'message'}
