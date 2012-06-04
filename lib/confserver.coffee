@@ -15,15 +15,9 @@ exports.createServer = (aOpts, aCallback) ->
         # TODO: Handle 404, route handlers, and all that other stuff a real
         # web service should be doing
 
-        req.on 'error', (err) ->
-            localError = new Error('confserver request error')
-            localError.stack += err.stack
-            return server.emit('error', localError)
-
-        res.on 'error', (err) ->
-            localError = new Error('confserver response error')
-            localError.stack += err.stack
-            return server.emit('error', localError)
+        # TODO
+        # req.on 'error', (err) ->
+        # res.on 'error', (err) ->
 
         body = ''
         req.setEncoding('utf8')
@@ -38,10 +32,7 @@ exports.createServer = (aOpts, aCallback) ->
                 resbody = JSON.stringify({
                     result: "invalid JSON: #{jsonError.message}"
                 })
-                res.writeHead(400, {
-                    'content-type': 'application/json'
-                    'content-length': Buffer.byteLength(resbody)
-                })
+                res.writeHead(400, headers(resbody))
                 res.end(resbody)
                 return
             return commitAppChanges(conf, res)
@@ -64,10 +55,7 @@ exports.createServer = (aOpts, aCallback) ->
             resbody = JSON.stringify({
                 result: "#{appname} restarted"
             })
-            res.writeHead(201, {
-                'content-type': 'application/json'
-                'content-length': Buffer.byteLength(resbody)
-            })
+            res.writeHead(201, headers(resbody))
             res.end(resbody)
             return
 
@@ -76,10 +64,7 @@ exports.createServer = (aOpts, aCallback) ->
             resbody = JSON.stringify({
                 result: "#{appname} did not restart"
             })
-            res.writeHead(504, {
-                'content-type': 'application/json'
-                'content-length': Buffer.byteLength(resbody)
-            })
+            res.writeHead(504, headers(resbody))
             res.end(resbody)
             return
 
@@ -97,3 +82,10 @@ exports.createServer = (aOpts, aCallback) ->
         return aCallback(server.address())
 
     return server
+
+
+headers = (body) ->
+    rv =
+        'content-type': 'application/json'
+        'content-length': Buffer.byteLength(body)
+    return rv

@@ -3,15 +3,18 @@ REQ = require 'request'
 describe 'mocked tests', ->
     SRV = require '../dist/lib/confserver'
 
+    APPNAME = 'myapp'
     gServer = null
 
 
     class MockedMonitor
-
         createChannel: (name) ->
             return new MockedChannel(name)
 
         subscribe: (name, listener) ->
+            setTimeout(->
+                return listener(APPNAME)
+            , 20)
             return
 
 
@@ -46,6 +49,7 @@ describe 'mocked tests', ->
 
 
     it 'should start on default port and hostname', (done) ->
+        @expectCount(2)
         createServer new MockedMonitor(), (addr) ->
             expect(addr.port).toBe(8080)
             expect(addr.address).toBe('127.0.0.1')
@@ -55,12 +59,14 @@ describe 'mocked tests', ->
 
 
     it 'should catch JSON errors', (done) ->
+        @expectCount(3)
         test = ->
             opts =
                 uri: 'http://localhost:8080'
                 body: ''
             REQ.post opts, (err, res, body) ->
                 expect(res.statusCode).toBe(400)
+                expect(res.headers['content-type']).toBe('application/json')
                 body = JSON.parse(body)
                 expect(body.result).toBe("invalid JSON: Unexpected end of input")
                 return done()
@@ -71,18 +77,38 @@ describe 'mocked tests', ->
 
 
     it 'should timeout if the webapp server does not respond to a restart', (done) ->
+        @expectCount(3)
         test = ->
             opts =
                 uri: 'http://localhost:8080'
                 body: JSON.stringify({name: 'myapp'})
             REQ.post opts, (err, res, body) ->
                 expect(res.statusCode).toBe(504)
+                expect(res.headers['content-type']).toBe('application/json')
                 body = JSON.parse(body)
                 expect(body.result).toBe('myapp did not restart')
                 return done()
             return
 
         createServer(new MockedMonitor(), {restartTimeout: 0}, test)
+        return
+
+
+    it 'should confirm application restart', (done) ->
+        @expectCount(3)
+        test = ->
+            opts =
+                uri: 'http://localhost:8080'
+                body: JSON.stringify({name: APPNAME})
+            REQ.post opts, (err, res, body) ->
+                expect(res.statusCode).toBe(201)
+                expect(res.headers['content-type']).toBe('application/json')
+                body = JSON.parse(body)
+                expect(body.result).toBe("#{APPNAME} restarted")
+                return done()
+            return
+
+        createServer(new MockedMonitor(), test)
         return
 
     return
