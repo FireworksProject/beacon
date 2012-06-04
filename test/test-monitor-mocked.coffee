@@ -134,4 +134,37 @@ describe 'mock functionality', ->
         return
 
 
+    it 'should close and emit a close event', (done) ->
+        @expectCount(2)
+        gotEvent = no
+        gotCallback = no
+
+        maybeDone = ->
+            if gotEvent and gotCallback then return done()
+            return
+
+        notes =
+            sendMail: (subject, body) ->
+                return
+            sendSMS: (message) ->
+                return
+
+        args =
+            notifications: notes
+            conf: DEFAULT_TEST_CONF
+        monitor = MON.createMonitor args, (err, server) ->
+            monitor.close ->
+                gotCallback = yes
+                expect('close callback').toExecute()
+                return maybeDone()
+            return
+
+        monitor.on 'close', ->
+            gotEvent = yes
+            expect('close event').toExecute()
+            return maybeDone()
+
+        return
+
+
     return

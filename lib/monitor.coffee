@@ -1,8 +1,10 @@
+EventEmitter = require('events').EventEmitter
+
 TEL = require 'telegram'
 
 
 exports.createMonitor = (aArgs, aCallback) ->
-    self = {}
+    self = new EventEmitter()
     mArgs = aArgs
     mNotes = aArgs.notifications
     mConf = aArgs.conf or {}
@@ -64,7 +66,11 @@ exports.createMonitor = (aArgs, aCallback) ->
 
 
     self.close = (callback) ->
-        mTelegramServer.on('close', callback)
+        onclose = ->
+            mTelegramServer.removeListener('close', onclose)
+            self.emit('close')
+            return callback()
+        mTelegramServer.on('close', onclose)
         mTelegramServer.close()
         return
 
