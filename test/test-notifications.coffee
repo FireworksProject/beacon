@@ -84,6 +84,8 @@ describe 'init errors', ->
 
 
 describe 'mock functionality', ->
+    Q = require 'q'
+
     NOTE = require '../dist/lib/notifications'
     SMS = require '../dist/node_modules/q-smsified'
     MAIL = require '../dist/node_modules/nodemailer'
@@ -142,7 +144,49 @@ describe 'mock functionality', ->
         return done()
 
 
-    ###
+    it 'should emit SMS and Email log events', (done) ->
+        @expectCount(3)
+
+        SMS.Session = (spec) ->
+            session = {}
+            session.send = (target, message) ->
+                deferred = Q.defer()
+                deferred.resolve({code: 201, data: {resourceURL: 'foo'}})
+                return deferred.promise
+            return session
+
+        MAIL.createTransport = ->
+            transport = {}
+
+            transport.close = (callback) ->
+                return callback()
+
+            transport.sendMail = (opts, callback) ->
+                callback(null, {message: 'sent'})
+                return
+
+            return transport
+
+        notifications = createService()
+        messageCount = 0
+
+        notifications.on 'log', (msg) ->
+            messageCount += 1
+
+            if /^Email\sMessage:/.test(msg)
+                expect(msg).toBe("Email Message: sent")
+
+            if /^SMS\sMessage:/.test(msg)
+                expect(msg).toBe('SMS Message: foo')
+
+            if messageCount is 3 then return done()
+            return
+
+        notifications.sendMail('1', '1')
+        notifications.sendSMS('1', '1')
+        return
+
+
     it 'should emit SMS and Email service errors', (done) ->
         @expectCount(5)
 
@@ -170,31 +214,24 @@ describe 'mock functionality', ->
 
             return transport
 
-        startMonitor (monitor) ->
-            messageCount = 0
-            monitor.on 'error', (err) ->
-                messageCount += 1
+        notifications = createService()
+        messageCount = 0
 
-                if /^Error\ssending\semail/.test(err.message)
-                    expect(err.message).toBe("Error sending email notification: Invalid User")
+        notifications.on 'error', (err) ->
+            messageCount += 1
 
-                if err.err
-                    expect(err.err.message).toBe('Unexpected response from SMS service')
-                    expect(err.err.code).toBe(401)
+            if /^Error\ssending\semail/.test(err.message)
+                expect(err.message).toBe("Error sending email notification: Invalid User")
 
-                if messageCount is 3 then return done()
-                return
+            if err.err
+                expect(err.err.message).toBe('Unexpected response from SMS service')
+                expect(err.err.code).toBe(401)
 
-            {port, hostname} = DEFAULT_TEST_CONF
-            connection = TEL.connect port, hostname, ->
-                channel = connection.createChannel('failure')
-                process.nextTick ->
-                    msg = {stack: 'stack', message: 'message'}
-                    channel.publish(JSON.stringify(msg))
-                    return
-                return
+            if messageCount is 3 then return done()
             return
+
+        notifications.sendMail('1', '1')
+        notifications.sendSMS('1', '1')
         return
-    ###
 
     return

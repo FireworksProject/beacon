@@ -10,8 +10,6 @@ DEFAULT_TEST_CONF =
 
 
 describe 'mock functionality', ->
-    Q = require 'q'
-
     TEL = require '../dist/node_modules/telegram'
     MON = require '../dist/lib/monitor'
 
