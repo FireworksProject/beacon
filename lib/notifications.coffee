@@ -84,6 +84,10 @@ exports.notifications = (aArgs) ->
 
 
     self.close = (callback) ->
-        return mMailTransport.close(callback)
+        mMailTransport.close ->
+            self.emit('close')
+            if typeof callback is 'function' then return callback()
+            return
+        return
 
     return self

@@ -1,10 +1,7 @@
 DEFAULT_TEST_CONF =
-    hostname: 'localhost'
-    port: 7272
     mail_list: ["foo@example.com", "bar@example.com"]
     sms_address: "5555555555"
     sms_list: ["5555555551", "5555555552"]
-    heartbeat_timeout: 1
 
 describe 'init errors', ->
     NOTE = require '../dist/lib/notifications'
@@ -278,6 +275,35 @@ describe 'mock functionality', ->
 
         notifications.sendMail('1', '1')
         notifications.sendSMS('1', '1')
+        return
+
+
+    it 'should close and emit a close event', (done) ->
+        @expectCount(2)
+        gotEvent = no
+        gotCallback = no
+
+        maybeDone = ->
+            if gotEvent and gotCallback then return done()
+            return
+
+        args =
+            mailUsername: TESTARGV.mail_username
+            mailPassword: TESTARGV.mail_password
+            smsUsername: TESTARGV.sms_username
+            smsPassword: TESTARGV.sms_password
+            conf: DEFAULT_TEST_CONF
+        notifications = NOTE.notifications(args)
+
+        notifications.on 'close', ->
+            gotEvent = yes
+            expect('close event').toExecute()
+            return maybeDone()
+
+        notifications.close ->
+            gotCallback = yes
+            expect('got callback').toExecute()
+            return maybeDone()
         return
 
     return
