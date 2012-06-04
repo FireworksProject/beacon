@@ -3,10 +3,6 @@ EventEmitter = require('events').EventEmitter
 DEFAULT_TEST_CONF =
     hostname: 'localhost'
     port: 7272
-    mail_list: ["foo@example.com", "bar@example.com"]
-    sms_address: "5555555555"
-    sms_list: ["5555555555", "5555555555"]
-    heartbeat_timeout: 1
 
 
 describe 'mock functionality', ->
@@ -17,10 +13,6 @@ describe 'mock functionality', ->
 
     startMonitor = (notifications, callback) ->
         args =
-            mailUsername: TESTARGV.mail_username
-            mailPassword: TESTARGV.mail_password
-            smsUsername: TESTARGV.sms_username
-            smsPassword: TESTARGV.sms_password
             notifications: notifications
             conf: DEFAULT_TEST_CONF
         gMonitor = MON.createMonitor args, (err, monitor) ->
@@ -34,6 +26,32 @@ describe 'mock functionality', ->
             done()
             return
         return
+
+
+    it 'should raise an exception for invalid port conf', (done) ->
+        @expectCount(2)
+        try
+            MON.createMonitor({conf: {hostname: 'localhost'}})
+        catch err
+            expect(err.message).toBe('invalid conf.port')
+        try
+            MON.createMonitor({conf: {hostname: 'localhost', port: 'foobar'}})
+        catch err
+            expect(err.message).toBe('invalid conf.port')
+        return done()
+
+
+    it 'should raise an exception for invalid hostname conf', (done) ->
+        @expectCount(2)
+        try
+            MON.createMonitor({conf: {port: 80}})
+        catch err
+            expect(err.message).toBe('invalid conf.hostname')
+        try
+            MON.createMonitor({conf: {hostname: true, port: 80}})
+        catch err
+            expect(err.message).toBe('invalid conf.hostname')
+        return done()
 
 
     it 'should send out warning emails', (done) ->
