@@ -3,7 +3,7 @@ DEFAULT_TEST_CONF =
     port: 7272
     mail_list: ["foo@example.com", "bar@example.com"]
     sms_address: "5555555555"
-    sms_list: ["5555555555", "5555555555"]
+    sms_list: ["5555555551", "5555555552"]
     heartbeat_timeout: 1
 
 describe 'init errors', ->
@@ -93,6 +93,7 @@ describe 'mock functionality', ->
     gMailCreateTransport = MAIL.createTransport
     gSMSSession = SMS.Session
     gService = null
+    EMAIL_FROM_ADDR = "SAKS Monitor <#{TESTARGV.mail_username}>"
 
     createService = ->
         args =
@@ -142,6 +143,51 @@ describe 'mock functionality', ->
 
         createService()
         return done()
+
+
+    it 'should send out emails', (done) ->
+        @expectCount(4)
+
+        MAIL.createTransport = ->
+            transport = {}
+
+            transport.close = (callback) ->
+                return callback()
+
+            transport.sendMail = (opts, callback) ->
+                expect(opts.from).toBe(EMAIL_FROM_ADDR)
+                expect(opts.to).toBe(DEFAULT_TEST_CONF.mail_list.join(', '))
+                expect(opts.subject).toBe('a subject line')
+                expect(opts.text).toBe('a message')
+                return done()
+
+            return transport
+
+        notifications = createService()
+        notifications.sendMail('a subject line', 'a message')
+        return
+
+
+    it 'should send out sms messages', (done) ->
+        @expectCount(4)
+        counter = 0
+
+        SMS.Session = (spec) ->
+            session = {}
+            session.send = (target, message) ->
+                expect(target).toBe(DEFAULT_TEST_CONF.sms_list[counter])
+                expect(message).toBe('a message')
+
+                counter += 1
+                if counter is 2 then return done()
+                deferred = Q.defer()
+                deferred.resolve({code: 201, data: {resourceURL: 'foo'}})
+                return deferred.promise
+            return session
+
+        notifications = createService()
+        notifications.sendSMS('a message')
+        return
 
 
     it 'should emit SMS and Email log events', (done) ->

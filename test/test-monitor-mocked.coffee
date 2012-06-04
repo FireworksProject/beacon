@@ -14,8 +14,6 @@ describe 'mock functionality', ->
     MON = require '../dist/lib/monitor'
 
     gMonitor = null
-    gFromEmail = "SAKS Monitor <#{TESTARGV.mail_username}>"
-    gToEmail = 'foo@example.com, bar@example.com'
 
     startMonitor = (notifications, callback) ->
         args =
