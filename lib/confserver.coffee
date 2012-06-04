@@ -78,6 +78,16 @@ exports.createServer = (aOpts, aCallback) ->
 
     server = HTTP.createServer(requestHandler)
 
+    serverClose = server.close
+    server.close = (callback) ->
+        onclose = ->
+            server.removeListener('close', onclose)
+            if typeof callback is 'function' then return callback()
+            return
+        server.on('close', onclose)
+        serverClose.call(server)
+        return
+
     server.listen port, hostname, ->
         return aCallback(server.address())
 

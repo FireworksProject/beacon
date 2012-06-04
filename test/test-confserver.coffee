@@ -41,10 +41,9 @@ describe 'mocked tests', ->
 
     afterEach (done) ->
         if gServer is null then return done()
-        gServer.on 'close', ->
+        gServer.close ->
             gServer = null
             return done()
-        gServer.close()
         return
 
 
@@ -109,6 +108,34 @@ describe 'mocked tests', ->
             return
 
         createServer(new MockedMonitor(), test)
+        return
+
+
+    it 'should close and emit a close event', (done) ->
+        @expectCount(2)
+        gotEvent = no
+        gotCallback = no
+
+        maybeDone = ->
+            if gotEvent and gotCallback then return done()
+            return
+
+        opts =
+            port: null # Defaults to 8080
+            hostname: null # Defaults to 'localhost'
+            monitor: new MockedMonitor()
+        server = SRV.createServer opts, (addr) ->
+            server.close ->
+                gotCallback = yes
+                expect('close callback').toExecute()
+                return maybeDone()
+            return
+
+        server.on 'close', ->
+            gotEvent = yes
+            expect('close event').toExecute()
+            return maybeDone()
+
         return
 
     return
