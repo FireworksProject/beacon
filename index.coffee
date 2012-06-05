@@ -12,7 +12,7 @@ exports.createService = (args, aCallback) ->
     args.conf = loadConf(args.confpath)
 
     notifications = NOTE.notifications(args)
-    service.notifications = args.notifications = notifications
+    args.notifications = notifications
 
     notifications.on 'error', (err) ->
         return service.emit('error', err)
@@ -32,7 +32,7 @@ exports.createService = (args, aCallback) ->
             aCallback(err, info)
             return
         return
-    service.montitor = args.monitor = monitor
+    args.monitor = monitor
 
     return service
 
@@ -50,12 +50,14 @@ loadConf = (confpath) ->
     catch readError
         if readError.code is 'ENOENT'
             throw new Error("cannot find conf file at #{abspath}")
+        if readError.code is 'EISDIR'
+            throw new Error("conf file at #{abspath} is a directory, not a file")
         throw readError
 
     try
         conf = JSON.parse(text)
     catch jsonError
-        msg = "syntax error in config file #{abspath} : #{jsonError.message}"
+        msg = "syntax error in conf file #{abspath} : #{jsonError.message}"
         throw new Error(msg)
 
     return conf

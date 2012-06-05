@@ -1,0 +1,8 @@
+{
+    "hostname": "localhost",
+    port: 7272,
+    "mail_list": ["foo@example.com", "bar@example.com"],
+    "sms_address": "5555555555",
+    "sms_list": ["5555555555", "5555555555"],
+    "heartbeat_timeout": 1
+}
