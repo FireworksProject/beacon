@@ -5,7 +5,7 @@
     "dependencies": {
         "bunyan": "0.7.0",
         "telegram": "0.2.0",
-        "nodemailer": "0.3.20",
+        "nodemailer": "0.3.22",
         "q-smsified": "https://github.com/downloads/FireworksProject/smsified/smsified-0.1.1.tar.gz"
     }
 }

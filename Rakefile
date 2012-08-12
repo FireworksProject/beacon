@@ -30,6 +30,7 @@ task :clean do
     rm_rf 'dist'
 end
 
+# Special development setup items that do not belong in production
 file 'tmp/setup.dump' => ['dev.list', 'tmp'] do |task|
     list = File.open(task.prerequisites.first, 'r')
     list.each do |line|
@@ -81,6 +82,7 @@ def npm_install(package)
 end
 
 def brew_javascript(source, target, node_exec=false)
+    # If node_exec=true then include a shabang line
     File.open(target, 'w') do |fd|
         if node_exec
             fd << "#!/usr/bin/env node\n\n"
